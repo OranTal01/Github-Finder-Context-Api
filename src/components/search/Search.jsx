@@ -1,8 +1,19 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useContext } from 'react';
 
-const Search = ({ setAlert, searchUser, clearUser, toggleClearBtn }) => {
+import GithubContext from '../../context/github/githubContext';
+
+const Search = (_) => {
   const [text, setText] = useState('');
+
+  const context = useContext(GithubContext);
+
+  const {
+    hideSearchClearBTn,
+    searchUser,
+    toggleClearBtn,
+    getRandomUsers,
+    setNotification,
+  } = context;
 
   const handleChangeText = (e) => {
     setText(e.target.value);
@@ -12,7 +23,7 @@ const Search = ({ setAlert, searchUser, clearUser, toggleClearBtn }) => {
     e.preventDefault();
     const trimText = text.trim();
     if (!trimText) {
-      setAlert('Please enter text', 'danger');
+      setNotification('Please enter text', 'danger');
     } else {
       searchUser(text);
       setText('');
@@ -20,7 +31,8 @@ const Search = ({ setAlert, searchUser, clearUser, toggleClearBtn }) => {
   };
 
   const handleClearBtn = () => {
-    clearUser();
+    getRandomUsers();
+    hideSearchClearBTn();
   };
 
   return (
@@ -37,18 +49,11 @@ const Search = ({ setAlert, searchUser, clearUser, toggleClearBtn }) => {
       </form>
       {toggleClearBtn && (
         <button className='btn btn-light btn-block' onClick={handleClearBtn}>
-          Clear
+          Clear Search
         </button>
       )}
     </div>
   );
-};
-
-Search.propTypes = {
-  searchUser: PropTypes.func.isRequired,
-  clearUser: PropTypes.func.isRequired,
-  toggleClearBtn: PropTypes.bool.isRequired,
-  setAlert: PropTypes.func.isRequired,
 };
 
 export default Search;
